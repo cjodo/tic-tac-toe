@@ -1,18 +1,24 @@
+const players = {
+  X: "X",
+  O: "O",
+  empty: "",
+};
+
 const gameBoard = (function () {
+  const boardDisplay = document.getElementById("board");
+  const board = [...boardDisplay.children];
+
+  board.forEach((cell) => cell.addEventListener("click", () => render(cell)));
+
   var turn = 0;
 
-  const players = {
-    X: "X",
-    O: "O",
-    empty: null,
+  const emptyCells = () => {
+    board.forEach((cell) => (cell.innerHTML = ""));
   };
 
   const init = () => {
     turn = 0;
     emptyCells();
-    // for (let i = 0; i < this.board.length; i++) {  
-    //   this.board[i] = this.players.empty;
-    // }
     console.log("Init Called");
   };
 
@@ -27,18 +33,9 @@ const gameBoard = (function () {
   const render = (div) => {
     if (div.innerHTML == "") {
       div.innerHTML += choosePlayer();
-      console.log(div);
     } else console.log("Occupied");
+    console.log(div);
   };
 
-  return { init, choosePlayer, render };
+  document.getElementById("reset").addEventListener("click", () => init());
 })();
-
-const emptyCells = () => {
-  const cells = document.querySelectorAll("[data-cell]");
-  cells.forEach((cell) => (cell.innerHTML = ""));
-};
-
-const resetBtn = document.getElementById("reset");
-
-resetBtn.addEventListener("click", () => gameBoard.init());
