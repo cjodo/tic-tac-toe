@@ -3,31 +3,43 @@
     X: "X",
     O: "O",
     empty: "",
-  };
 
+    chooseRandom: function () {
+      const randomIndex = Math.floor(Math.random() * 8);
+      return randomIndex;
+    },
+  };
+  const xTurn = document.getElementById("x-turn");
+  const oTurn = document.getElementById("o-turn");
   const boardDisplay = document.getElementById("board");
   const board = [...boardDisplay.children];
   let boardStatus = new Array(9);
 
-  const popup = document.getElementById('win-result')
+  const popup = document.getElementById("win-result");
   let isWinner = false;
 
-  board.forEach(cell => {
+  board.forEach((cell) => {
     cell.addEventListener("click", () => {
       // Draws player onto the board
-      console.log({isWinner});
-      if(!isWinner){
+      if (cell.innerText != "X" && cell.innerText != "O") {
+        changeTurn();
+      }
+      if (!isWinner) {
         render(cell);
         addPlayers();
       }
-      if(checkWin(boardStatus) && popup.innerText == ''){
-        popup.innerText = `${checkWin(boardStatus)} Wins!!`
+      if (checkWin(boardStatus) && popup.innerText == "") {
+        popup.innerText = `${checkWin(boardStatus)} Wins!!`;
         isWinner = true;
       }
-      })
-    }
+    });
+  });
+
+  const changeTurn = () => {
     
-  );
+    xTurn.classList.toggle("turn");
+    oTurn.classList.toggle("turn");
+  };
 
   var turn = 0;
 
@@ -40,8 +52,11 @@
   };
 
   const init = () => {
-    popup.classList.remove('active')
-    popup.innerText = '';
+    // Change it to X turn
+    xTurn.classList.add('turn')
+    oTurn.classList.remove('turn')
+    popup.classList.remove("active");
+    popup.innerText = "";
     isWinner = false;
     turn = 0; // Initializes turn
     board.forEach((cell) => (cell.innerHTML = players.empty));
@@ -53,13 +68,9 @@
   resetButton.addEventListener("click", () => init());
 
   const choosePlayer = () => {
-    if (turn < 9) {
-      turn++;
-      console.log(`Turn: ${turn}`);
-      return turn % 2 == 0 ? players.O : players.X;
-    } else {
-      console.log("Turn 10");
-    }
+    turn++;
+    console.log(`Turn: ${turn}`);
+    return turn % 2 == 0 ? players.O : players.X;
   };
 
   const render = (cell) => {
@@ -70,7 +81,7 @@
 
   const checkWin = (board) => {
     const newBoard = buildBoard(board);
-    let isWin = false;
+    let winner = false;
 
     for (let row = 0; row < 3; row++) {
       // check for horizontal win anywhere
@@ -81,9 +92,9 @@
       if (left || middle || right) {
         // if theres an undefined spot there can't be a win
         if (left == middle && middle == right) {
-          isWin = left; // Returns who won
+          winner = left; // Returns who won
           console.log(`${left} Wins!`);
-          return isWin;
+          return winner;
         }
       }
     }
@@ -95,9 +106,9 @@
       let right = newBoard[2][col];
       if (left || middle || right) {
         if (left == middle && middle == right) {
-          isWin = left; // Returns who won
+          winner = left; // Returns who won
           console.log(`${left} Wins!`);
-          return isWin;
+          return winner;
         }
       }
     }
@@ -110,9 +121,9 @@
     // Check the first diagonal
     if (UL || M || BR) {
       if (UL == M && M == BR) {
-        isWin = UL; // Returns who won
+        winner = UL; // Returns who won
         console.log(`${UL} Wins!`);
-        return isWin;
+        return winner;
       }
     }
 
@@ -120,13 +131,13 @@
     let BL = newBoard[2][0];
     if (UR || M || BL) {
       if (UR == M && M == BL) {
-        isWin = UR;
+        winner = UR;
         console.log(`${UR} Wins!`);
-        return isWin;
+        return winner;
       }
     }
 
-    return isWin;
+    return winner;
   };
 
   const buildBoard = (board) => {

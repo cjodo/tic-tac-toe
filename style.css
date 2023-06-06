@@ -30,6 +30,7 @@ body {
 #board-container {
     display: flex;
     flex-direction: column;
+    margin-top: 50px;
 }
 
 #score-container{
@@ -94,4 +95,32 @@ button {
 
 .active {
     visibility: visible;
+}
+
+#turn-container{
+    display: flex;
+    margin-top: 20px;
+    gap: 30px;
+}
+
+ #text {
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 30px;
+}
+
+#x-turn, #o-turn{
+    height: 80px;
+    width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    font-size: 50px;
+}
+
+
+.turn{
+    border: 2px solid rgb(0, 38, 255);
 }
