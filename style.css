@@ -86,7 +86,12 @@ body {
 }
 
 button {
-  margin-top: 30px;
+    font-size: 15 px;
+    height: 2em;
+    width: 4em;
+    margin-top: 50px;
 }
 
-
+.active {
+    visibility: visible;
+}
