@@ -75,9 +75,6 @@ const addPlayers = () => {
 };
 
 const init = () => {
-  // Change it to X turn
-  xTurn.classList.add("turn");
-  oTurn.classList.remove("turn");
   // Hide winner popup
   popup.classList.remove("active");
   popup.innerText = "";
