@@ -1,44 +1,64 @@
-(function () {
+
   const players = {
     X: "X",
     O: "O",
     empty: "",
 
-    chooseRandom: function () {
-      const randomIndex = Math.floor(Math.random() * 8);
-      return randomIndex;
-    },
   };
+
   const xTurn = document.getElementById("x-turn");
   const oTurn = document.getElementById("o-turn");
+
   const boardDisplay = document.getElementById("board");
   const board = [...boardDisplay.children];
   let boardStatus = new Array(9);
 
   const popup = document.getElementById("win-result");
+
   let isWinner = false;
 
-  board.forEach((cell) => {
-    cell.addEventListener("click", () => {
-      // Draws player onto the board
-      if (cell.innerText != "X" && cell.innerText != "O") {
-        changeTurn();
-      }
-      if (!isWinner) {
-        render(cell);
-        addPlayers();
-      }
-      if (checkWin(boardStatus) && popup.innerText == "") {
-        popup.innerText = `${checkWin(boardStatus)} Wins!!`;
-        isWinner = true;
-      }
+  const handleClick = (() =>{
+    board.forEach((cell) => {
+      cell.addEventListener("click", () => {
+        if (!cell.innerText) {
+          changeTurn();
+          //aiPick();
+        }
+        if (!isWinner) {
+          render(cell);
+          addPlayers();
+        };
+
+        if (checkWin(boardStatus) && popup.innerText == "") {
+          popup.innerText = `${checkWin(boardStatus)} Wins!!`;
+          isWinner = true;
+        }
+        
+        if(turn < 8 && !isWinner){
+          aiPick();
+        }
+      });
     });
-  });
+  })()
+
+  const aiPick = () => {
+    while(true){
+      const randomIndex = Math.floor(Math.random() * 8)
+
+      if(board[randomIndex].innerHTML == ''){
+        board[randomIndex].innerHTML += players.O
+        addPlayers();
+        changeTurn();
+        return;
+      }
+    }
+  }
+
 
   const changeTurn = () => {
-    
-    xTurn.classList.toggle("turn");
-    oTurn.classList.toggle("turn");
+    if(!isWinner){
+    turn++;
+    }
   };
 
   var turn = 0;
@@ -53,12 +73,14 @@
 
   const init = () => {
     // Change it to X turn
-    xTurn.classList.add('turn')
-    oTurn.classList.remove('turn')
+    xTurn.classList.add("turn");
+    oTurn.classList.remove("turn");
+    // Hide winner popup
     popup.classList.remove("active");
     popup.innerText = "";
     isWinner = false;
     turn = 0; // Initializes turn
+    // Empty board
     board.forEach((cell) => (cell.innerHTML = players.empty));
     boardStatus = new Array(9);
     console.log("Init Called");
@@ -68,7 +90,6 @@
   resetButton.addEventListener("click", () => init());
 
   const choosePlayer = () => {
-    turn++;
     console.log(`Turn: ${turn}`);
     return turn % 2 == 0 ? players.O : players.X;
   };
@@ -78,6 +99,10 @@
       cell.innerHTML += choosePlayer();
     } else console.log("Occupied");
   };
+
+
+
+
 
   const checkWin = (board) => {
     const newBoard = buildBoard(board);
@@ -152,4 +177,19 @@
     }
     return newBoard;
   };
-})();
+
+  const bestMove = (board) => {
+    const newBoard = buildBoard(board);
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (newBoard[i][j] == "X") {
+          return { i, j };
+        }
+      }
+    }
+  };
+
+
+
+
+
