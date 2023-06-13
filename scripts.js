@@ -154,20 +154,6 @@ function minimax(newBoard, player) {
   return moves[bestMove];
 }
 
-const randomAiPick = () => {
-  // A little gross 
-  while (true) {
-    const randomIndex = Math.floor(Math.random() * 9);
-
-    if (board[randomIndex].innerHTML == "") {
-      board[randomIndex].innerHTML += players.O;
-      addPlayers();
-      changeTurn();
-      return;
-    }
-  }
-};
-
 const changeTurn = () => {
   if (!isWinner) {
     turn++;
