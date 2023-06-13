@@ -1,50 +1,159 @@
 const players = {
-  X: "X",
-  O: "O",
+  human: "X",
+  ai: "O",
   empty: "",
 };
 
-const xTurn = document.getElementById("x-turn");
-const oTurn = document.getElementById("o-turn");
+const winCombos = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [6, 4, 2]
+]
 
 const boardDisplay = document.getElementById("board");
 const board = [...boardDisplay.children];
-let boardStatus = new Array(9);
-
 const popup = document.getElementById("win-result");
-
 let isWinner = false;
+let boardStatus;
+
+
+
+const init = () => {
+  // Hide winner popup
+  popup.classList.remove("active");
+  popup.innerText = "";
+  isWinner = false;
+  turn = 0; 
+  // Empty board
+  board.forEach((cell) => (cell.innerHTML = players.empty));
+  boardStatus = Array.from(Array(9).keys());
+  console.log("Init Called");
+};
+
+init();
+
+
+const bestSpot = () => {
+  return minimax(boardStatus, players.ai).index
+} 
 
 const handleClick = (() => {
   board.forEach((cell) => {
     cell.addEventListener("click", () => {
+
       if (!cell.innerText && !isWinner) {
         changeTurn();
         render(cell);
         addPlayers();
+        console.log(bestSpot());
 
-        
         if (!checkWin(boardStatus)) {
           // Has to check that win or draw conditions aren't met before letting ai play
           if (turn == 9) {
             popup.innerHTML += "It's a Draw!";
             return;
           } else {
-            aiPick();
+            board[bestSpot()].innerHTML = players.ai;
+            addPlayers()
+            changeTurn()
           }
         }
-      }
+      };
+
       
       if (checkWin(boardStatus) && popup.innerText == "") {
         popup.innerText = `${checkWin(boardStatus)} Wins!!`;
         isWinner = true;
       }
-
+      
     });
   });
 })();
 
-const aiPick = () => {
+function newSquares() {
+  const empty = [];
+  for(let i = 0; i < boardStatus.length; i++){
+    if(boardStatus[i] == undefined){
+      empty[i] = i;
+    } else empty[i] = boardStatus[i]
+  }
+  return empty
+}
+
+function emptySquares(board) {
+  return boardStatus.filter(s => typeof s == 'number')
+}
+
+const aiCheck = (board, player) => {
+  let plays = board.reduce((a, e, i) =>
+      (e === player) ? a.concat(i) : a, []);
+  let gameWon = null;
+  for (let [index, win] of winCombos.entries()) {
+      if (win.every(elem => plays.indexOf(elem) > -1)) {
+          gameWon = { index: index, player: player };
+          break;
+      }
+  }
+  return gameWon;
+};
+
+function minimax(newBoard, player) {
+  var availSpots = emptySquares();
+
+  if (aiCheck(newBoard, players.human)) {
+      return { score: -10 };
+  } else if (aiCheck(newBoard, players.ai)) {
+      return { score: 10 };
+  } else if (availSpots.length === 0) {
+      return { score: 0 };
+  }
+  var moves = [];
+  for (var i = 0; i < availSpots.length; i++) {
+      var move = {};
+      move.index = newBoard[availSpots[i]];
+      newBoard[availSpots[i]] = player;
+
+      if (player == players.ai) {
+          var result = minimax(newBoard, players.human);
+          move.score = result.score;
+      } else {
+          var result = minimax(newBoard, players.ai);
+          move.score = result.score;
+      }
+
+      newBoard[availSpots[i]] = move.index;
+
+      moves.push(move);
+  }
+
+  var bestMove;
+  if (player === players.ai) {
+      var bestScore = -10000;
+      for (var i = 0; i < moves.length; i++) {
+          if (moves[i].score > bestScore) {
+              bestScore = moves[i].score;
+              bestMove = i;
+          }
+      }
+  } else {
+      var bestScore = 10000;
+      for (var i = 0; i < moves.length; i++) {
+          if (moves[i].score < bestScore) {
+              bestScore = moves[i].score;
+              bestMove = i;
+          }
+      }
+  }
+
+  return moves[bestMove];
+}
+
+const randomAiPick = () => {
   // A little gross 
   while (true) {
     const randomIndex = Math.floor(Math.random() * 9);
@@ -74,29 +183,17 @@ const addPlayers = () => {
   }
 };
 
-const init = () => {
-  // Hide winner popup
-  popup.classList.remove("active");
-  popup.innerText = "";
-  isWinner = false;
-  turn = 0; 
-  // Empty board
-  board.forEach((cell) => (cell.innerHTML = players.empty));
-  boardStatus = new Array(9);
-  console.log("Init Called");
-};
+
 
 const resetButton = document.getElementById("reset");
 resetButton.addEventListener("click", () => init());
 
 const choosePlayer = () => {
-  return turn % 2 == 0 ? players.O : players.X;
+  return turn % 2 == 0 ? players.ai : players.human;
 };
 
 const render = (cell) => {
-  if (cell.innerHTML == "") {
     cell.innerHTML += choosePlayer();
-  } else console.log("Occupied");
 };
 
 const checkWin = (board) => {
@@ -168,3 +265,4 @@ const buildBoard = (board) => {
   }
   return newBoard;
 };
+
