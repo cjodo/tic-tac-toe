@@ -50,7 +50,6 @@ const handleClick = (() => {
         changeTurn();
         render(cell);
         addPlayers();
-        console.log(bestSpot());
 
         if (!checkWin(boardStatus)) {
           // Has to check that win or draw conditions aren't met before letting ai play
@@ -61,6 +60,8 @@ const handleClick = (() => {
             board[bestSpot()].innerHTML = players.ai;
             addPlayers()
             changeTurn()
+
+            // console.log(bestSpot())
           }
         }
       };
