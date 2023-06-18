@@ -101,3 +101,18 @@ button {
     margin-top: 20px;
 }
 
+#board :nth-child(1):hover {
+    border-top-left-radius: 10px;
+}
+
+#board :nth-child(3):hover {
+    border-top-right-radius: 10px;
+}
+
+#board :nth-child(7):hover {
+    border-bottom-left-radius: 10px;
+}
+
+#board :nth-child(9):hover {
+    border-bottom-right-radius: 10px;
+}
