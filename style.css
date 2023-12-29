@@ -33,19 +33,8 @@ body {
     margin-top: 50px;
 }
 
-#score-container{
-    display: flex;
-    justify-content: space-between;
-    width: max(30%, 200px);
-    margin-top: 50px;
-    margin-bottom: 50px;
-    align-items: center;
-    padding-bottom: 20px;
-}
-
-#score-player, #score-computer {
-    font-weight: 700;
-    font-size: 19px;
+.score {
+    margin: 24px 0 0 0;
 }
 
 #board {
