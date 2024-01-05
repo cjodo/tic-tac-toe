@@ -8,6 +8,7 @@ const boardDisplay = document.getElementById("board");
 const board = [...boardDisplay.children];
 const popup = document.getElementById("win-result");
 let isWinner = false;
+let isDraw = false;
 let boardStatus;
 let aiScore = 0;
 let playerScore = 0;
@@ -22,6 +23,7 @@ const init = () => {
   popup.classList.remove("active");
   popup.innerText = "";
   isWinner = false;
+  isDraw = false;
   turn = 0; 
   // Empty board
   board.forEach((cell) => (cell.innerHTML = players.empty));
@@ -42,9 +44,10 @@ const getPlayerSelection = () => {
 }
 
 const handleTurnOne = () => {
-  if(players.ai == 'X'){
+  if(players.ai == 'X' && turn == 0){
     turn = 1;
-    const index = bestSpot(players.ai)
+    const index = 0 // Computer will choose this spot every time so it's faster to hard code it in                // Instead of calling minimax every time
+    // const index = bestSpot(players.ai)
     board[index].innerHTML = players.ai;
     addPlayers()
     changeTurn()
@@ -72,7 +75,7 @@ const bestSpot = (player) => {
 const handleClick = (() => {
   board.forEach((cell) => {
     cell.addEventListener("click", () => {
-      if (!cell.innerText && !isWinner) {
+      if (!cell.innerText && !isWinner && !isDraw) {
         // changeTurn();
         turn++
         render(cell);
@@ -82,6 +85,7 @@ const handleClick = (() => {
           // Has to check that win or draw conditions aren't met before letting ai play
           if (turn == 9) {
             popup.innerHTML += "It's a Draw!";
+            isDraw= true;
             return;
           } else {
             const index = bestSpot(players.ai)
@@ -98,10 +102,10 @@ const handleClick = (() => {
         popup.innerText = `${winner} Wins!!`;
         isWinner = true;
         switch(winner){
-          case 'X':
+          case players.human:
             playerScore += 1;
             break
-          case 'O':
+          case players.ai:
             aiScore += 1;
             break
         }
@@ -127,8 +131,13 @@ function emptySquares(board) {
 }
 
 function updateScore(aiScore, playerScore){
-  scoreboard[0].innerHTML = `Computer: ${aiScore}`
-  scoreboard[1].innerHTML = `Player: ${playerScore}`
+  let aiScoreDisplay = scoreboard[0]
+  let humanScoreDisplay = scoreboard[1]
+  aiScoreDisplay.innerHTML = `Computer: ${aiScore}`
+  humanScoreDisplay.innerHTML = `Player: ${playerScore}`
+  if(aiScore > 5) {
+    aiScoreDisplay.innerHTML += ' <strong>You cannot win. Give up</strong>'
+  }
 }
 
 const aiCheck = (board, player) => {
@@ -302,6 +311,7 @@ const buildBoard = (board) => {
   return newBoard;
 };
 
+init();
 
 const selectionDiv = document.querySelector('.player-selection')
 const selectionButtons = document.querySelectorAll('.selection')
@@ -310,7 +320,8 @@ selectionDiv.addEventListener('click', () => {
   selectionButtons.forEach((button) => {
     button.classList.toggle('selected')
   })
+  init()
+  handleTurnOne();
 })
 
-init();
 

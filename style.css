@@ -32,6 +32,15 @@ body {
     margin: 50px auto;
 }
 
+.player-selection {
+    margin: 12px;
+    text-align: center;
+}
+
+.player-selection > button {
+    margin-top: 12px;
+}
+
 .selected {
     background-color: rgb(200, 200, 200);
 }
