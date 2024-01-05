@@ -26,12 +26,13 @@ const init = () => {
   // Empty board
   board.forEach((cell) => (cell.innerHTML = players.empty));
   boardStatus = Array.from(Array(9).keys());
-  console.log("Init Called");
   updateScore(aiScore, playerScore);
+  getPlayerSelection();
+  handleTurnOne();
 };
 
 
-const choosePlayers = () => {
+const getPlayerSelection = () => {
   players.human = document.querySelector('.selected').innerHTML
   if(players.human == 'X'){
     players.ai = 'O'
@@ -40,8 +41,15 @@ const choosePlayers = () => {
   }
 }
 
-
-init();
+const handleTurnOne = () => {
+  if(players.ai == 'X'){
+    turn = 1;
+    const index = bestSpot(players.ai)
+    board[index].innerHTML = players.ai;
+    addPlayers()
+    changeTurn()
+  }
+}
 
 const winCombos = [
   [0, 1, 2],
@@ -55,18 +63,18 @@ const winCombos = [
 ]
 
 // returns index of the best spot for current player
-const bestSpot = () => {
-  return minimax(boardStatus, players.ai).index
+const bestSpot = (player) => {
+  return minimax(boardStatus, player).index
 } 
 
-const selectionButtons = document.querySelectorAll('.selection')
-choosePlayers()
+
 
 const handleClick = (() => {
   board.forEach((cell) => {
     cell.addEventListener("click", () => {
       if (!cell.innerText && !isWinner) {
-        changeTurn();
+        // changeTurn();
+        turn++
         render(cell);
         addPlayers();
 
@@ -76,7 +84,7 @@ const handleClick = (() => {
             popup.innerHTML += "It's a Draw!";
             return;
           } else {
-            const index = bestSpot()
+            const index = bestSpot(players.ai)
             board[index].innerHTML = players.ai;
             addPlayers()
             changeTurn()
@@ -210,14 +218,18 @@ resetButton.addEventListener("click", () => init());
 
 const choosePlayer = () => {
   if(players.ai == 'X'){
-    return turn % 2 == 0 ? players.human : players.ai 
+    return 'O' 
   } else if (players.ai == 'O') {
-    return turn % 2 !== 0 ? players.ai : players.human 
+    return 'X'
   }
+
 };
 
 const render = (cell, player) => {
+  let p = choosePlayer();
+  console.log(p)
     cell.innerHTML += choosePlayer();
+    
 };
 
 const checkWin = (board) => {
@@ -289,4 +301,16 @@ const buildBoard = (board) => {
   }
   return newBoard;
 };
+
+
+const selectionDiv = document.querySelector('.player-selection')
+const selectionButtons = document.querySelectorAll('.selection')
+
+selectionDiv.addEventListener('click', () => {
+  selectionButtons.forEach((button) => {
+    button.classList.toggle('selected')
+  })
+})
+
+init();
 
