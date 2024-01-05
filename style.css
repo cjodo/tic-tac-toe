@@ -42,6 +42,8 @@ body {
 }
 
 .selected {
+    border: 1px solid black;
+    border-radius: 0.3em;
     background-color: rgb(200, 200, 200);
 }
 

@@ -2,8 +2,6 @@ const players = {
   empty: "",
 };
 
-
-
 const boardDisplay = document.getElementById("board");
 const board = [...boardDisplay.children];
 const popup = document.getElementById("win-result");
@@ -13,10 +11,6 @@ let boardStatus;
 let aiScore = 0;
 let playerScore = 0;
 let scoreboard = document.querySelector('.score').children
-
-//  TODO 
-//  Make some buttons to choose to play either X or O 
-
 
 const init = () => {
   // Hide winner popup'
@@ -32,7 +26,6 @@ const init = () => {
   getPlayerSelection();
   handleTurnOne();
 };
-
 
 const getPlayerSelection = () => {
   players.human = document.querySelector('.selected').innerHTML
@@ -70,8 +63,6 @@ const bestSpot = (player) => {
   return minimax(boardStatus, player).index
 } 
 
-
-
 const handleClick = (() => {
   board.forEach((cell) => {
     cell.addEventListener("click", () => {
@@ -95,7 +86,6 @@ const handleClick = (() => {
           }
         }
       };
-
       
       if (checkWin(boardStatus) && popup.innerText == "") {
         let winner = checkWin(boardStatus);
@@ -111,7 +101,6 @@ const handleClick = (() => {
         }
         updateScore(aiScore, playerScore)
       }
-      
     });
   });
 })();
@@ -323,5 +312,3 @@ selectionDiv.addEventListener('click', () => {
   init()
   handleTurnOne();
 })
-
-
