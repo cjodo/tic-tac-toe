@@ -1,8 +1,47 @@
 const players = {
-  human: "X",
-  ai: "O",
   empty: "",
 };
+
+
+
+const boardDisplay = document.getElementById("board");
+const board = [...boardDisplay.children];
+const popup = document.getElementById("win-result");
+let isWinner = false;
+let boardStatus;
+let aiScore = 0;
+let playerScore = 0;
+let scoreboard = document.querySelector('.score').children
+
+//  TODO 
+//  Make some buttons to choose to play either X or O 
+
+
+const init = () => {
+  // Hide winner popup'
+  popup.classList.remove("active");
+  popup.innerText = "";
+  isWinner = false;
+  turn = 0; 
+  // Empty board
+  board.forEach((cell) => (cell.innerHTML = players.empty));
+  boardStatus = Array.from(Array(9).keys());
+  console.log("Init Called");
+  updateScore(aiScore, playerScore);
+};
+
+
+const choosePlayers = () => {
+  players.human = document.querySelector('.selected').innerHTML
+  if(players.human == 'X'){
+    players.ai = 'O'
+  } else {
+    players.ai = 'X'
+  }
+}
+
+
+init();
 
 const winCombos = [
   [0, 1, 2],
@@ -15,40 +54,17 @@ const winCombos = [
   [6, 4, 2]
 ]
 
-const boardDisplay = document.getElementById("board");
-const board = [...boardDisplay.children];
-const popup = document.getElementById("win-result");
-let isWinner = false;
-let boardStatus;
-let aiScore = 0;
-let playerScore = 0;
-let scoreboard = document.querySelector('.score').children
-
-
-
-const init = () => {
-  // Hide winner popup
-  popup.classList.remove("active");
-  popup.innerText = "";
-  isWinner = false;
-  turn = 0; 
-  // Empty board
-  board.forEach((cell) => (cell.innerHTML = players.empty));
-  boardStatus = Array.from(Array(9).keys());
-  console.log("Init Called");
-  updateScore(aiScore, playerScore);
-};
-init();
-
 // returns index of the best spot for current player
 const bestSpot = () => {
   return minimax(boardStatus, players.ai).index
 } 
 
+const selectionButtons = document.querySelectorAll('.selection')
+choosePlayers()
+
 const handleClick = (() => {
   board.forEach((cell) => {
     cell.addEventListener("click", () => {
-
       if (!cell.innerText && !isWinner) {
         changeTurn();
         render(cell);
@@ -196,7 +212,7 @@ const choosePlayer = () => {
   if(players.ai == 'X'){
     return turn % 2 == 0 ? players.human : players.ai 
   } else if (players.ai == 'O') {
-    return turn % 2 == 0 ? players.ai : players.human 
+    return turn % 2 !== 0 ? players.ai : players.human 
   }
 };
 

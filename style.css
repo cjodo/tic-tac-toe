@@ -29,8 +29,11 @@ body {
 
 #board-container {
     display: flex;
-    flex-direction: column;
-    margin-top: 50px;
+    margin: 50px auto;
+}
+
+.selected {
+    background-color: rgb(200, 200, 200);
 }
 
 .score {
