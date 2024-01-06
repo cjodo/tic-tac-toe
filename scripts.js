@@ -10,7 +10,7 @@ let isDraw = false;
 let boardStatus;
 let aiScore = 0;
 let playerScore = 0;
-let scoreboard = document.querySelector('.score').children
+let scoreboard = document.querySelector(".score").children;
 
 const init = () => {
   // Hide winner popup'
@@ -18,7 +18,7 @@ const init = () => {
   popup.innerText = "";
   isWinner = false;
   isDraw = false;
-  turn = 0; 
+  turn = 0;
   // Empty board
   board.forEach((cell) => (cell.innerHTML = players.empty));
   boardStatus = Array.from(Array(9).keys());
@@ -28,24 +28,25 @@ const init = () => {
 };
 
 const getPlayerSelection = () => {
-  players.human = document.querySelector('.selected').innerHTML
-  if(players.human == 'X'){
-    players.ai = 'O'
+  players.human = document.querySelector(".selected").innerHTML;
+  if (players.human == "X") {
+    players.ai = "O";
   } else {
-    players.ai = 'X'
+    players.ai = "X";
   }
-}
+};
 
 const handleTurnOne = () => {
-  if(players.ai == 'X' && turn == 0){
+  if (players.ai == "X" && turn == 0) {
     turn = 1;
-    const index = 0 // Computer will choose this spot every time so it's faster to hard code it in                // Instead of calling minimax every time
+    const index = Math.floor(Math.random() * 9); // More interesting if first computer turn is random
+    // Computer will choose 0th every time if minimax is called
     // const index = bestSpot(players.ai)
     board[index].innerHTML = players.ai;
-    addPlayers()
-    changeTurn()
+    addPlayers();
+    changeTurn();
   }
-}
+};
 
 const winCombos = [
   [0, 1, 2],
@@ -55,20 +56,20 @@ const winCombos = [
   [1, 4, 7],
   [2, 5, 8],
   [0, 4, 8],
-  [6, 4, 2]
-]
+  [6, 4, 2],
+];
 
 // returns index of the best spot for current player
 const bestSpot = (player) => {
-  return minimax(boardStatus, player).index
-} 
+  return minimax(boardStatus, player).index;
+};
 
 const handleClick = (() => {
   board.forEach((cell) => {
     cell.addEventListener("click", () => {
       if (!cell.innerText && !isWinner && !isDraw) {
         // changeTurn();
-        turn++
+        turn++;
         render(cell);
         addPlayers();
 
@@ -76,30 +77,30 @@ const handleClick = (() => {
           // Has to check that win or draw conditions aren't met before letting ai play
           if (turn == 9) {
             popup.innerHTML += "It's a Draw!";
-            isDraw= true;
+            isDraw = true;
             return;
           } else {
-            const index = bestSpot(players.ai)
+            const index = bestSpot(players.ai);
             board[index].innerHTML = players.ai;
-            addPlayers()
-            changeTurn()
+            addPlayers();
+            changeTurn();
           }
         }
-      };
-      
+      }
+
       if (checkWin(boardStatus) && popup.innerText == "") {
         let winner = checkWin(boardStatus);
-        popup.innerText = `${winner} Wins!!`;
         isWinner = true;
-        switch(winner){
+        popup.innerText = `${winner} Wins!!`;
+        switch (winner) {
           case players.human:
             playerScore += 1;
-            break
+            break;
           case players.ai:
             aiScore += 1;
-            break
+            break;
         }
-        updateScore(aiScore, playerScore)
+        updateScore(aiScore, playerScore);
       }
     });
   });
@@ -107,37 +108,36 @@ const handleClick = (() => {
 
 function newSquares() {
   const empty = [];
-  for(let i = 0; i < boardStatus.length; i++){
-    if(boardStatus[i] == undefined){
+  for (let i = 0; i < boardStatus.length; i++) {
+    if (boardStatus[i] == undefined) {
       empty[i] = i;
-    } else empty[i] = boardStatus[i]
+    } else empty[i] = boardStatus[i];
   }
-  return empty
+  return empty;
 }
 
-function emptySquares(board) {
-  return boardStatus.filter(s => typeof s == 'number')
+function emptySquares() {
+  return boardStatus.filter((s) => typeof s == "number");
 }
 
-function updateScore(aiScore, playerScore){
-  let aiScoreDisplay = scoreboard[0]
-  let humanScoreDisplay = scoreboard[1]
-  aiScoreDisplay.innerHTML = `Computer: ${aiScore}`
-  humanScoreDisplay.innerHTML = `Player: ${playerScore}`
-  if(aiScore > 5) {
-    aiScoreDisplay.innerHTML += ' <strong>You cannot win. Give up</strong>'
+function updateScore(aiScore, playerScore) {
+  let aiScoreDisplay = scoreboard[0];
+  let humanScoreDisplay = scoreboard[1];
+  aiScoreDisplay.innerHTML = `Computer: ${aiScore}`;
+  humanScoreDisplay.innerHTML = `Player: ${playerScore}`;
+  if (aiScore > 5) {
+    aiScoreDisplay.innerHTML += " <strong>You cannot win. Give up</strong>";
   }
 }
 
 const aiCheck = (board, player) => {
-  let plays = board.reduce((a, e, i) =>
-      (e === player) ? a.concat(i) : a, []);
+  let plays = board.reduce((a, e, i) => (e === player ? a.concat(i) : a), []);
   let gameWon = null;
   for (let [index, win] of winCombos.entries()) {
-      if (win.every(elem => plays.indexOf(elem) > -1)) {
-          gameWon = { index: index, player: player };
-          break;
-      }
+    if (win.every((elem) => plays.indexOf(elem) > -1)) {
+      gameWon = { index: index, player: player };
+      break;
+    }
   }
   return gameWon;
 };
@@ -146,48 +146,48 @@ function minimax(newBoard, player) {
   var availSpots = emptySquares();
 
   if (aiCheck(newBoard, players.human)) {
-      return { score: -10 };
+    return { score: -10 };
   } else if (aiCheck(newBoard, players.ai)) {
-      return { score: 10 };
+    return { score: 10 };
   } else if (availSpots.length === 0) {
-      return { score: 0 };
+    return { score: 0 };
   }
   var moves = [];
   for (var i = 0; i < availSpots.length; i++) {
-      var move = {};
-      move.index = newBoard[availSpots[i]];
-      newBoard[availSpots[i]] = player;
+    var move = {};
+    move.index = newBoard[availSpots[i]];
+    newBoard[availSpots[i]] = player;
 
-      if (player == players.ai) {
-          var result = minimax(newBoard, players.human);
-          move.score = result.score;
-      } else {
-          var result = minimax(newBoard, players.ai);
-          move.score = result.score;
-      }
+    if (player == players.ai) {
+      var result = minimax(newBoard, players.human);
+      move.score = result.score;
+    } else {
+      var result = minimax(newBoard, players.ai);
+      move.score = result.score;
+    }
 
-      newBoard[availSpots[i]] = move.index;
+    newBoard[availSpots[i]] = move.index;
 
-      moves.push(move);
+    moves.push(move);
   }
 
   var bestMove;
   if (player === players.ai) {
-      var bestScore = -10000;
-      for (var i = 0; i < moves.length; i++) {
-          if (moves[i].score > bestScore) {
-              bestScore = moves[i].score;
-              bestMove = i;
-          }
+    var bestScore = -10000;
+    for (var i = 0; i < moves.length; i++) {
+      if (moves[i].score > bestScore) {
+        bestScore = moves[i].score;
+        bestMove = i;
       }
+    }
   } else {
-      var bestScore = 10000;
-      for (var i = 0; i < moves.length; i++) {
-          if (moves[i].score < bestScore) {
-              bestScore = moves[i].score;
-              bestMove = i;
-          }
+    var bestScore = 10000;
+    for (var i = 0; i < moves.length; i++) {
+      if (moves[i].score < bestScore) {
+        bestScore = moves[i].score;
+        bestMove = i;
       }
+    }
   }
 
   return moves[bestMove];
@@ -209,25 +209,20 @@ const addPlayers = () => {
   }
 };
 
-
-
 const resetButton = document.getElementById("reset");
 resetButton.addEventListener("click", () => init());
 
 const choosePlayer = () => {
-  if(players.ai == 'X'){
-    return 'O' 
-  } else if (players.ai == 'O') {
-    return 'X'
+  if (players.ai == "X") {
+    return "O";
+  } else if (players.ai == "O") {
+    return "X";
   }
-
 };
 
-const render = (cell, player) => {
-  let p = choosePlayer();
-  console.log(p)
-    cell.innerHTML += choosePlayer();
-    
+const render = (cell) => {
+  let currPlayer = choosePlayer();
+  cell.innerHTML += currPlayer;
 };
 
 const checkWin = (board) => {
@@ -302,13 +297,13 @@ const buildBoard = (board) => {
 
 init();
 
-const selectionDiv = document.querySelector('.player-selection')
-const selectionButtons = document.querySelectorAll('.selection')
+const selectionDiv = document.querySelector(".player-selection");
+const selectionButtons = document.querySelectorAll(".selection");
 
-selectionDiv.addEventListener('click', () => {
+selectionDiv.addEventListener("click", () => {
   selectionButtons.forEach((button) => {
-    button.classList.toggle('selected')
-  })
-  init()
+    button.classList.toggle("selected");
+  });
+  init();
   handleTurnOne();
-})
+});
