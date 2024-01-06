@@ -39,11 +39,7 @@ const getPlayerSelection = () => {
 const handleTurnOne = () => {
   if (players.ai == "X" && turn == 0) {
     turn = 1;
-<<<<<<< HEAD
     const index = Math.floor(Math.random() * 9); // More interesting if first computer turn is random
-=======
-    const index = Math.floor(Math.random() * 8); // More interesting if first computer turn is random
->>>>>>> edf7b47c6f4e313e44f2eea937f0d03ca31942d2
     // Computer will choose 0th every time if minimax is called
     // const index = bestSpot(players.ai)
     board[index].innerHTML = players.ai;
