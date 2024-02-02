@@ -4,15 +4,25 @@
     font-family: 'Courier New', Courier, monospace;
 }
 
+:root {
+    --dark  : #3d3b40;
+    --blue  : #525ceb;
+    --slate : #bfcfe7;
+    --pink  : #f8edff;
+    --green : #24cc44;
+}
+
 body {
+    background-color: var(--dark);
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100vw;
-    height: 100vh;
+    color: var(--pink);
+    font-size: 100%;
 }
 
-.title {
+h1 {
+    color: var(--pink);
     font-size: 40px;
     font-weight: 600;
     text-decoration: underline;
@@ -37,15 +47,30 @@ body {
     text-align: center;
 }
 
+button {
+    font-size: 24px;
+    height: 1.5em;
+    width: 4em;
+    margin-top: 24px;
+    border: 3px solid transparent;
+    border-radius: 5px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+}
+
+button:hover{
+    cursor: pointer;
+    /* border-color: #1f51ff; */
+    box-shadow: 5px 5px 5px rgba(31, 81, 255, 0.5);
+}
+
 .player-selection > button {
     margin-top: 12px;
 }
 
 .selected {
-    border: 1px solid black;
-    border-radius: 0.3em;
-    background-color: rgb(200, 200, 200);
+    background-color: var(--blue); 
 }
+
 
 .score {
     margin: 24px 0 0 0;
@@ -74,6 +99,7 @@ body {
 }
 
 [data-cell]{
+    color: var(--dark);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -82,40 +108,50 @@ body {
     border: solid 2px rgb(0, 0, 0);
     height: 100px;
     width: 100px;
+    background-color: var(--slate);
 }
 
 [data-cell]:hover {
+    background-color: #9cadd6;
     cursor:pointer;
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-button {
-    font-size: 15 px;
-    height: 2em;
-    width: 4em;
-    margin-top: 50px;
 }
 
 .active {
     visibility: visible;
 }
 
-#win-popup {
+.win-popup {
     margin-top: 20px;
 }
 
-#board :nth-child(1):hover {
+#board > *:nth-child(1){
     border-top-left-radius: 10px;
 }
 
-#board :nth-child(3):hover {
+#board > *:nth-child(3){
     border-top-right-radius: 10px;
 }
 
-#board :nth-child(7):hover {
+#board > *:nth-child(7){
     border-bottom-left-radius: 10px;
 }
 
-#board :nth-child(9):hover {
+#board > *:nth-child(9){
     border-bottom-right-radius: 10px;
+}
+
+
+footer {
+    background-color: black;
+    width: 100%;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 64px 0 0 0;
+}
+
+footer img {
+    width: 64px;
+    height: auto;
 }

@@ -1,33 +1,42 @@
+// TODO:
+// Change the draw funtionality, turn 9 doesn't mean there is a draw.   
+// When player is O, the ai can still play on the last available spot but is not allowed.
+
+
 const players = {
   empty: "",
+  human: null,
+  ai: null,
 };
 
 const boardDisplay = document.getElementById("board");
 const board = [...boardDisplay.children];
-const popup = document.getElementById("win-result");
-let isWinner = false;
-let isDraw = false;
+const popup = document.querySelector('.win-result')
+let isWinner;
+let turn;
+let isDraw;
 let boardStatus;
 let aiScore = 0;
-let playerScore = 0;
+let playerScore = 0; 
+var sleepSetTimeout_ctrl;
 let scoreboard = document.querySelector(".score").children;
 
 const init = () => {
   // Hide winner popup'
   popup.classList.remove("active");
   popup.innerText = "";
+  turn = 0
   isWinner = false;
   isDraw = false;
-  turn = 0;
   // Empty board
   board.forEach((cell) => (cell.innerHTML = players.empty));
   boardStatus = Array.from(Array(9).keys());
   updateScore(aiScore, playerScore);
-  getPlayerSelection();
+  setPlayerSelection();
   handleTurnOne();
 };
 
-const getPlayerSelection = () => {
+const setPlayerSelection = () => {
   players.human = document.querySelector(".selected").innerHTML;
   if (players.human == "X") {
     players.ai = "O";
@@ -68,7 +77,6 @@ const handleClick = (() => {
   board.forEach((cell) => {
     cell.addEventListener("click", () => {
       if (!cell.innerText && !isWinner && !isDraw) {
-        // changeTurn();
         turn++;
         render(cell);
         addPlayers();
@@ -199,8 +207,6 @@ const changeTurn = () => {
   }
 };
 
-var turn = 0;
-
 const addPlayers = () => {
   for (let i = 0; i < board.length; i++) {
     if (board[i].innerHTML != "") {
@@ -209,7 +215,7 @@ const addPlayers = () => {
   }
 };
 
-const resetButton = document.getElementById("reset");
+const resetButton = document.querySelector("#reset");
 resetButton.addEventListener("click", () => init());
 
 const choosePlayer = () => {
@@ -243,7 +249,6 @@ const checkWin = (board) => {
       }
     }
   }
-
   for (let col = 0; col < 3; col++) {
     // Check for vertical win
     let left = newBoard[0][col];
@@ -256,9 +261,7 @@ const checkWin = (board) => {
       }
     }
   }
-
   // Checks for diagonal win
-
   let UL = newBoard[0][0];
   let M = newBoard[1][1];
   let BR = newBoard[2][2];
@@ -278,10 +281,10 @@ const checkWin = (board) => {
       return winner;
     }
   }
-
   return winner;
 };
 
+//returns a board that is in a better form for the ai
 const buildBoard = (board) => {
   const newBoard = [[], [], []];
   const rowsCols = 3;
