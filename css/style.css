@@ -28,14 +28,13 @@ h1 {
     text-decoration: underline;
 }
 
-#header {
+header {
     padding-top: 50px;
     display: flex;
     width: 100%;
     align-items: center;
     justify-content: center;
 }
-
 
 #board-container {
     display: flex;
@@ -122,6 +121,14 @@ button:hover{
 
 .win-popup {
     margin-top: 20px;
+    justify-content: center;
+    height: 1em;
+}
+
+.win-result {
+    display: flex;
+    margin: 0 auto;
+    position: relative;
 }
 
 #board > *:nth-child(1){
@@ -149,6 +156,7 @@ footer {
     align-items: center;
     justify-content: center;
     margin: 64px 0 0 0;
+    text-align: center;
 }
 
 footer img {
