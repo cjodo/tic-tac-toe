@@ -8,7 +8,6 @@ const players = {
   ai: null,
 };
 
-// const boardDisplay = document.getElementById("board");
 const board = document.getElementById("board").children; 
 const popup = document.querySelector('.win-result')
 let isWinner;
@@ -17,11 +16,12 @@ let isDraw;
 let boardStatus;
 let aiScore = 0;
 let playerScore = 0; 
-var sleepSetTimeout_ctrl;
 let scoreboard = document.querySelector(".score").children;
 
 const init = () => {
   // Hide winner popup'
+  scoreboard[0].innerHTML = `Computer: ${aiScore}`
+  scoreboard[1].innerHTML = `Player: ${playerScore}`
   popup.classList.remove("active");
   popup.innerText = "";
   turn = 0
@@ -33,7 +33,6 @@ const init = () => {
   }
   // board.forEach(cell => cell.innerHTML = players.empty);
   boardStatus = Array.from(Array(9).keys()); 
-  updateScore(aiScore, playerScore);
   setPlayerSelection();
   handleTurnOne();
 };
@@ -107,20 +106,15 @@ const handleClick = (event) => {
     let winner = aiWin;
     isWinner = true;
     popup.innerText = `${winner} Wins!!`;
-    switch (winner) {
-      case players.human:
-        playerScore += 1;
-        break;
-      case players.ai:
-        aiScore += 1;
-        break;
-    }
-    updateScore(aiScore, playerScore);
+    updateScore(winner);
   }
   checkDraw(boardStatus)
 };
 
 function checkDraw(board) {
+  if(checkWin(boardStatus)){
+    return
+  }
   if(board.filter(c => typeof c === 'string').length == 9){
     isDraw = true
     popup.innerHTML += "It's a Draw!"
@@ -141,14 +135,16 @@ function emptySquares() {
   return boardStatus.filter(s => typeof s == "number");
 }
 
-function updateScore(aiScore, playerScore) {
+function updateScore(winner) {
+  if(!winner){
+    return
+  }
   let aiScoreDisplay = scoreboard[0];
   let humanScoreDisplay = scoreboard[1];
+
+  winner == players.human ? playerScore++ : aiScore++
   aiScoreDisplay.innerHTML = `Computer: ${aiScore}`;
   humanScoreDisplay.innerHTML = `Player: ${playerScore}`;
-  if (aiScore > 5) {
-    aiScoreDisplay.innerHTML += " <strong>You cannot win. Give up</strong>";
-  }
 }
 
 const aiCheck = (board, player) => {
@@ -317,8 +313,6 @@ for (const cell in board) {
     board[cell].addEventListener("click", handleClick)
   }
 }
-
-// board.forEach(cell => cell.addEventListener("click", handleClick))
 
 const resetButton = document.querySelector("#reset");
 const selectionDiv = document.querySelector(".player-selection");
