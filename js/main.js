@@ -1,6 +1,7 @@
 // TODO:
 // Change the draw funtionality, turn 9 doesn't mean there is a draw.   
 // When player is O, the ai can still play on the last available spot but is not allowed.
+// spit init into a reset/init function
 
 const players = {
   empty: "",
@@ -8,8 +9,8 @@ const players = {
   ai: null,
 };
 
-const boardDisplay = document.getElementById("board");
-const board = [...boardDisplay.children];
+// const boardDisplay = document.getElementById("board");
+const board = document.getElementById("board").children; 
 const popup = document.querySelector('.win-result')
 let isWinner;
 let turn;
@@ -28,7 +29,10 @@ const init = () => {
   isWinner = false;
   isDraw = false;
   // Empty board
-  board.forEach(cell => cell.innerHTML = players.empty);
+  for (const cell in board) {
+    board[cell].innerHTML = players.empty
+  }
+  // board.forEach(cell => cell.innerHTML = players.empty);
   boardStatus = Array.from(Array(9).keys());
   updateScore(aiScore, playerScore);
   setPlayerSelection();
@@ -297,7 +301,13 @@ const buildBoard = (board) => {
 
 init(); // Initializes players for first turn
 
-board.forEach(cell => cell.addEventListener("click", handleClick))
+for (const cell in board) {
+  if(typeof board[cell]== 'object'){
+    board[cell].addEventListener("click", handleClick)
+  }
+}
+
+// board.forEach(cell => cell.addEventListener("click", handleClick))
 
 const resetButton = document.querySelector("#reset");
 const selectionDiv = document.querySelector(".player-selection");
