@@ -1,7 +1,6 @@
 // TODO:
 // Change the draw funtionality, turn 9 doesn't mean there is a draw.   
 // When player is O, the ai can still play on the last available spot but is not allowed.
-// spit init into a reset/init function
 
 const players = {
   empty: "",
@@ -33,7 +32,7 @@ const init = () => {
     board[cell].innerHTML = players.empty
   }
   // board.forEach(cell => cell.innerHTML = players.empty);
-  boardStatus = Array.from(Array(9).keys());
+  boardStatus = Array.from(Array(9).keys()); 
   updateScore(aiScore, playerScore);
   setPlayerSelection();
   handleTurnOne();
@@ -78,29 +77,34 @@ const bestSpot = (player) => {
 
 const handleClick = (event) => {
   const cell = event.target
+  
+  if(isDraw) {
+    console.log('draw')
+    return
+  }
 
-  if (!cell.innerText && !isWinner && !isDraw) {
+  if (!cell.innerText && !isWinner) { // player turn
     turn++;
     render(cell);
     addPlayers();
-
-    if (!checkWin(boardStatus)) {
-      // Has to check that win or draw conditions aren't met before letting ai play
-      if (turn == 9) {
-        popup.innerHTML += "It's a Draw!";
-        isDraw = true;
-        return;
-      } else {
-        const index = bestSpot(players.ai);
-        board[index].innerHTML = players.ai;
-        addPlayers();
-        changeTurn();
-      }
-    }
   }
 
-  if (checkWin(boardStatus) && popup.innerText == "") {
-    let winner = checkWin(boardStatus);
+  let playerWin = checkWin(boardStatus);
+
+  if (!playerWin) { // AI Turn
+    const index = bestSpot(players.ai);
+    if(index === undefined){
+      checkDraw(boardStatus)
+      return
+    } 
+    board[index].innerHTML = players.ai;
+    addPlayers();
+    changeTurn();
+  }
+  let aiWin = checkWin(boardStatus)
+
+  if (aiWin && popup.innerText == "") {
+    let winner = aiWin;
     isWinner = true;
     popup.innerText = `${winner} Wins!!`;
     switch (winner) {
@@ -113,8 +117,15 @@ const handleClick = (event) => {
     }
     updateScore(aiScore, playerScore);
   }
+  checkDraw(boardStatus)
 };
 
+function checkDraw(board) {
+  if(board.filter(c => typeof c === 'string').length == 9){
+    isDraw = true
+    popup.innerHTML += "It's a Draw!"
+  }
+}
 
 function newSquares() {
   const empty = [];
