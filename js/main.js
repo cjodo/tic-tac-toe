@@ -2,7 +2,6 @@
 // Change the draw funtionality, turn 9 doesn't mean there is a draw.   
 // When player is O, the ai can still play on the last available spot but is not allowed.
 
-
 const players = {
   empty: "",
   human: null,
@@ -29,7 +28,7 @@ const init = () => {
   isWinner = false;
   isDraw = false;
   // Empty board
-  board.forEach((cell) => (cell.innerHTML = players.empty));
+  board.forEach(cell => cell.innerHTML = players.empty);
   boardStatus = Array.from(Array(9).keys());
   updateScore(aiScore, playerScore);
   setPlayerSelection();
@@ -124,7 +123,7 @@ function newSquares() {
 }
 
 function emptySquares() {
-  return boardStatus.filter((s) => typeof s == "number");
+  return boardStatus.filter(s => typeof s == "number");
 }
 
 function updateScore(aiScore, playerScore) {
@@ -139,9 +138,10 @@ function updateScore(aiScore, playerScore) {
 
 const aiCheck = (board, player) => {
   let plays = board.reduce((a, e, i) => (e === player ? a.concat(i) : a), []);
+
   let gameWon = null;
   for (let [index, win] of winCombos.entries()) {
-    if (win.every((elem) => plays.indexOf(elem) > -1)) {
+    if (win.every(elem => plays.indexOf(elem) > -1)) {
       gameWon = { index: index, player: player };
       break;
     }
@@ -214,8 +214,6 @@ const addPlayers = () => {
   }
 };
 
-const resetButton = document.querySelector("#reset");
-resetButton.addEventListener("click", () => init());
 
 const choosePlayer = () => {
   if (players.ai == "X") {
@@ -297,15 +295,20 @@ const buildBoard = (board) => {
   return newBoard;
 };
 
+init(); // Initializes players for first turn
+
 board.forEach(cell => cell.addEventListener("click", handleClick))
 
-init();
-
+const resetButton = document.querySelector("#reset");
 const selectionDiv = document.querySelector(".player-selection");
+
 const selectionButtons = document.querySelectorAll(".selection");
+
+resetButton.addEventListener("click", init);
 
 selectionDiv.addEventListener("click", () => {
   selectionButtons.forEach( button => button.classList.toggle("selected"));
   init();
   handleTurnOne();
 });
+
