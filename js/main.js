@@ -73,46 +73,45 @@ const bestSpot = (player) => {
   return minimax(boardStatus, player).index;
 };
 
-const handleClick = (() => {
-  board.forEach((cell) => {
-    cell.addEventListener("click", () => {
-      if (!cell.innerText && !isWinner && !isDraw) {
-        turn++;
-        render(cell);
+const handleClick = (event) => {
+  const cell = event.target
+
+  if (!cell.innerText && !isWinner && !isDraw) {
+    turn++;
+    render(cell);
+    addPlayers();
+
+    if (!checkWin(boardStatus)) {
+      // Has to check that win or draw conditions aren't met before letting ai play
+      if (turn == 9) {
+        popup.innerHTML += "It's a Draw!";
+        isDraw = true;
+        return;
+      } else {
+        const index = bestSpot(players.ai);
+        board[index].innerHTML = players.ai;
         addPlayers();
-
-        if (!checkWin(boardStatus)) {
-          // Has to check that win or draw conditions aren't met before letting ai play
-          if (turn == 9) {
-            popup.innerHTML += "It's a Draw!";
-            isDraw = true;
-            return;
-          } else {
-            const index = bestSpot(players.ai);
-            board[index].innerHTML = players.ai;
-            addPlayers();
-            changeTurn();
-          }
-        }
+        changeTurn();
       }
+    }
+  }
 
-      if (checkWin(boardStatus) && popup.innerText == "") {
-        let winner = checkWin(boardStatus);
-        isWinner = true;
-        popup.innerText = `${winner} Wins!!`;
-        switch (winner) {
-          case players.human:
-            playerScore += 1;
-            break;
-          case players.ai:
-            aiScore += 1;
-            break;
-        }
-        updateScore(aiScore, playerScore);
-      }
-    });
-  });
-})();
+  if (checkWin(boardStatus) && popup.innerText == "") {
+    let winner = checkWin(boardStatus);
+    isWinner = true;
+    popup.innerText = `${winner} Wins!!`;
+    switch (winner) {
+      case players.human:
+        playerScore += 1;
+        break;
+      case players.ai:
+        aiScore += 1;
+        break;
+    }
+    updateScore(aiScore, playerScore);
+  }
+};
+
 
 function newSquares() {
   const empty = [];
@@ -298,15 +297,15 @@ const buildBoard = (board) => {
   return newBoard;
 };
 
+board.forEach(cell => cell.addEventListener("click", handleClick))
+
 init();
 
 const selectionDiv = document.querySelector(".player-selection");
 const selectionButtons = document.querySelectorAll(".selection");
 
 selectionDiv.addEventListener("click", () => {
-  selectionButtons.forEach((button) => {
-    button.classList.toggle("selected");
-  });
+  selectionButtons.forEach( button => button.classList.toggle("selected"));
   init();
   handleTurnOne();
 });
