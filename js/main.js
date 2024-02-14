@@ -1,7 +1,3 @@
-// TODO:
-// Change the draw funtionality, turn 9 doesn't mean there is a draw.   
-// When player is O, the ai can still play on the last available spot but is not allowed.
-
 const players = {
   empty: "",
   human: null,
@@ -272,7 +268,7 @@ const checkWin = (board) => {
   return winner;
 };
 
-//returns a board that is in a better form for the ai
+//returns a board that is in a better format for checkWin()
 const buildBoard = (board) => {
   const newBoard = [[], [], []];
   const rowsCols = 3;
