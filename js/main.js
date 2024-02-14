@@ -54,7 +54,7 @@ const handleTurnOne = () => {
     // const index = bestSpot(players.ai)
     board[index].innerHTML = players.ai;
     addPlayers();
-    changeTurn();
+    turn++;
   }
 };
 
@@ -76,15 +76,14 @@ const bestSpot = (player) => {
 
 const handleClick = (event) => {
   const cell = event.target
-  
-  if(isDraw) {
-    console.log('draw')
+
+  if(isDraw || isWinner) {
     return
   }
 
   if (!cell.innerText && !isWinner) { // player turn
     turn++;
-    render(cell);
+    cell.innerText = players.human;
     addPlayers();
   }
 
@@ -98,7 +97,7 @@ const handleClick = (event) => {
     } 
     board[index].innerHTML = players.ai;
     addPlayers();
-    changeTurn();
+    turn++;
   }
   let aiWin = checkWin(boardStatus)
 
@@ -211,32 +210,13 @@ function minimax(newBoard, player) {
   return moves[bestMove];
 }
 
-const changeTurn = () => {
-  if (!isWinner) {
-    turn++;
-  }
-};
-
 const addPlayers = () => {
   for (let i = 0; i < board.length; i++) {
     if (board[i].innerHTML != "") {
       boardStatus[i] = board[i].innerHTML;
+      console.log(boardStatus)
     }
   }
-};
-
-
-const choosePlayer = () => {
-  if (players.ai == "X") {
-    return "O";
-  } else if (players.ai == "O") {
-    return "X";
-  }
-};
-
-const render = (cell) => {
-  let currPlayer = choosePlayer();
-  cell.innerHTML += currPlayer;
 };
 
 const checkWin = (board) => {
