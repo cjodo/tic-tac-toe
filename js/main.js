@@ -210,7 +210,6 @@ const addPlayers = () => {
   for (let i = 0; i < board.length; i++) {
     if (board[i].innerHTML != "") {
       boardStatus[i] = board[i].innerHTML;
-      console.log(boardStatus)
     }
   }
 };
